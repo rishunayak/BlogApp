@@ -1,6 +1,6 @@
 import express from 'express'
 import dotenv from "dotenv"
-import connectToMongoDb from './db/connectToMongoDb';
+import connectToMongoDb from './db/connectToMongoDb.js';
 import userRoutes from "./routes/user.route.js"
 import authRoutes from "./routes/auth.route.js"
 
@@ -15,8 +15,8 @@ app.use("/ap/user",userRoutes);
 app.use("/api/auth",authRoutes);
 
 
-app.link(8080,()=>
+app.listen(8080,()=>
 {
-    connectToMongoDb()
+    connectToMongoDb();
     console.log("server is runing on server 8080")
 })
