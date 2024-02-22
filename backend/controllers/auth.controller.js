@@ -60,13 +60,9 @@ export const login=async(req,res)=>
           }
     
           generateTokenAndsetCookie(user._id,res);
-    
-          res.status(200).json({
-            _id:user._id,
-            email:user.email,
-            username:user.username,
-          })
-    
+
+          const { password: pass, ...rest } = user._doc;
+          res.status(200).json(rest)
       
        } catch (error) {
           console.log("Error in login Controller",error.message)
