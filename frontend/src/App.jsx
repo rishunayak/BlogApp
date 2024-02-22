@@ -7,18 +7,25 @@ import SignUp from './pages/SignUp'
 import Dashboard from './pages/Dashboard'
 import Header from './components/Header'
 import FooterComponent from './components/FooterComponent'
+import PrivateRoute from './components/PrivateRoute'
+import { useSelector } from 'react-redux'
 
 
 const App = () => {
+  const {currentUser}=useSelector(store=>store.user)
+
   return (
     <>
-      <Header/>1
+      <Header/>
       <Routes>
         <Route path='/' element={<Home/>}/>
         <Route path='/about' element={<About/>} />
-        <Route path='/sign-in' element={<SignIn/>} />
-        <Route path='/sign-up' element={<SignUp/>} />
-        <Route path='/dashboard' element={<Dashboard/>} />
+        <Route path='/sign-in' element={currentUser?<Home/>:<SignIn/>} />
+        <Route path='/sign-up' element={currentUser?<Home/>:<SignUp/>} />
+        <Route element={<PrivateRoute/>}>
+          <Route path='/dashboard' element={<Dashboard/>} />
+        </Route>
+        
 
       </Routes>
       <FooterComponent/>
