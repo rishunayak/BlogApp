@@ -4,7 +4,6 @@ import { auth } from "../middleware/auth.js";
 
 const router =express.Router();
 
-router.get("/test",)
 router.put('/update/:userId',auth,updateUser);
 
 
