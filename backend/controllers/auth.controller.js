@@ -70,6 +70,41 @@ export const login=async(req,res)=>
        }
 }
 
+export const google=async(req,res)=>
+{
+    const {email,name,googlePhotoUrl}=req.body;
+
+    try {
+        const user=await User.findOne({email});
+        if(user)
+        {
+            generateTokenAndsetCookie(user._id,res);
+            const {password,...rest}=user._doc
+            res.status(200).json(rest)
+        }else{
+            const generatedPassword=Math.random().toString(36).slice(-8);
+            const salt=await bcrypt.genSalt(10);
+        const hashedPassword=await bcrypt.hash(generatedPassword,salt)
+        const newUser=new User({
+            username:name.toLowerCase().split(" ").join("")+Math.random().toString(9).slice(-4),
+            email,
+            password:hashedPassword,
+            profilePicture:googlePhotoUrl,
+        })
+          await newUser.save();
+           generateTokenAndsetCookie(newUser._id,res);
+            const {password,...rest}=newUser._doc
+            
+            res.status(200).json(rest)
+        }
+
+    } catch (error) {
+         console.log("Error in login Controller",error.message)
+          res.status(500).json({error:"Internal Server Error"})
+    }
+
+}
+
 
 const generateTokenAndsetCookie=(userId,res)=>
 {
@@ -80,3 +115,5 @@ const generateTokenAndsetCookie=(userId,res)=>
         sameSite:"strict", // CSRF attack cross site 
     })
 }
+
+
