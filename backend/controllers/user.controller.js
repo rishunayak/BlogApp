@@ -51,3 +51,19 @@ export const updateUser=async(req,res)=>
 
     
 }
+
+export const deleteUser=async(req,res)=>
+{
+  if(req.user._id.toString() !== req.params.userId)
+  {
+      return res.status(403).json({error:'You are not allowed to updare this user'});
+  }
+
+  try {
+    await User.findByIdAndDelete(req.params.userId)
+    res.status(200).json({message:'User has been deleted'})
+  } catch (error) {
+    console.log("Error in singup Controller",error.message)
+    res.status(500).json({error:"Internal Server Error"})
+  }
+}
