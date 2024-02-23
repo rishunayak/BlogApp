@@ -12,9 +12,10 @@ import {
 } from 'firebase/storage'
 import {HiOutlineExclamationCircle} from "react-icons/hi"
 import { deleteUserFailure, deleteUserStart, deleteUserSuccess, signoutSuccess, updateFailure, updateStart, updateSuccess } from '../redux/user/userSlice';
+import { Link } from 'react-router-dom';
 
 const DashProfile = () => {
-    const { currentUser,error } = useSelector(store => store.user);
+    const { currentUser,error,loading } = useSelector(store => store.user);
     const [showModel,setShowModel]=useState(false);
     const [imageFile, setImageFile] = useState(null);
     const [imageFileUrl, setImageFileUrl] = useState(null);
@@ -196,7 +197,18 @@ const DashProfile = () => {
                 <TextInput type='password' id='password' placeholder='password'
                 onChange={handleChange}
                 />
-                <Button type='submit' gradientDuoTone={'purpleToBlue'} outline disabled={imageFileUploadSuccess}>Update</Button>
+                <Button type='submit' gradientDuoTone={'purpleToBlue'} outline disabled={imageFileUploadSuccess || loading}>
+                    {loading?'Loading...':'Update'}
+                </Button>
+                {
+                    currentUser.isAdmin && <Link to={'/create-post'}>
+                    <Button type='button' className=' w-full'
+                    gradientDuoTone={'purpleToPink'}
+                    >
+                        Crate a post
+                    </Button>
+                    </Link> 
+                }
             </form>
             <div className='text-red-500 flex justify-between mt-5'>
                 <span className='cursor-pointer' onClick={()=>setShowModel(true)}>Delete Account</span>
