@@ -84,10 +84,10 @@ export const getUsers=async(req,res)=>
   {
       return res.status(403).json({error:'You are not allowed to see all user'});
   }
-
+  
   try {
      const startIndex=+(req.query.startIndex) || 0;
-     const limit=+(req.query.startIndex) || 9;
+     const limit=+(req.query.startIndex) || 5;
      const sortDirection=req.query.order==='asc'?1:-1;
 
      const users=await User.find().select('-password')
