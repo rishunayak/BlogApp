@@ -37,7 +37,7 @@ const SignUp = () => {
       }
       if(res.ok)
       {
-        nav("/login")
+        nav("/sign-in")
       }
     } catch (error) {
       setError(error.message)
