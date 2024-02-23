@@ -11,6 +11,7 @@ import PrivateRoute from './components/PrivateRoute'
 import { useSelector } from 'react-redux'
 import AdminPrivateRoute from './components/AdminPrivateRoute'
 import CreatePost from './pages/CreatePost'
+import UpdatePost from './pages/UpdatePost'
 
 
 const App = () => {
@@ -30,6 +31,7 @@ const App = () => {
     
         <Route  element={<AdminPrivateRoute/>}>
           <Route path='/create-post' element={<CreatePost/>}/>
+          <Route path='/update-post/:postId' element={<UpdatePost/>}/>
         </Route>
 
       </Routes>
