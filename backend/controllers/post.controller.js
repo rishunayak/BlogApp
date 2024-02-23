@@ -75,3 +75,28 @@ export const deletePost=async(req,res)=>
         res.status(500).json({error:"Internal Server Error"})
     }
 }
+
+
+export const updatePost=async(req,res)=>
+{
+    if(!req.user.isAdmin || req.user._id.toString()!==req.params.userId)
+    {
+        return res.status(403).json({error:'You are not allowed to delete this post'});
+    }
+
+    try {
+        const post=await Post.findByIdAndUpdate(req.params.postId,
+            {
+                $set:{
+                      title:req.body.title,
+                      content:req.body.content,
+                      category:req.body.category,
+                      image:req.body.image,
+                     }
+            },{new:true})
+            res.status(200).json(post)
+    } catch (error) {
+        console.log("Error in Post Controller",error.message)
+        res.status(500).json({error:"Internal Server Error"})
+    }
+}
