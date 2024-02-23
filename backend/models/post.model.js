@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const postSchema=new mongoose.Schema({
     
     userId:{type:String,required:true},
-    title:{type:String,required:true,unique},
+    title:{type:String,required:true,unique:true},
     content:{type:String,required:true},
     image:{
         type:String,
@@ -15,7 +15,7 @@ const postSchema=new mongoose.Schema({
         default:'uncategorized'
     },
     slug:{
-        type:String,required:true,unique
+        type:String,required:true,unique: true
     }
     
 },{timestamps:true})
