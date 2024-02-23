@@ -7,10 +7,12 @@ import { app } from '../firebase';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const UpdatePost = () => {
 
   const nav=useNavigate()
+  const {currentUser}=useSelector(store=>store.user)
   const [file,setFile]=useState(null)
   const [imageFileUploadingProgress,setImageFileUploadingProgress]=useState(null)
   const [imageUploadError,setImageUploadError]=useState(null);
@@ -22,9 +24,10 @@ const UpdatePost = () => {
   {
     e.preventDefault();
     setPublishError(null);
+
     try {
-        const res= await fetch('api/post/create',{
-            method:'POST',
+        const res= await fetch(`/api/post/update/${formData._id}/${currentUser._id}`,{
+            method:'PUT',
             headers:{'Content-Type':'application/json'},
             body:JSON.stringify(formData)
         })
@@ -36,6 +39,7 @@ const UpdatePost = () => {
         }
         nav(`/post/${data.slug}`)
     } catch (error) {
+        console.log(error.message)
         setPublishError("Something went wrong");
     }
 
@@ -63,6 +67,8 @@ const UpdatePost = () => {
     fetchPost();
   },[postId])
 
+
+
   const handleUploadImage=async()=>
   {
      try {
@@ -89,7 +95,6 @@ const UpdatePost = () => {
             },
             () => {
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                   // setImageFileUrl(downloadURL);
                     setFormData({...formData,image:downloadURL});
                     setImageFileUploadingProgress(null);
                     setImageUploadError(null);
@@ -130,6 +135,7 @@ const UpdatePost = () => {
               />
               <Button type='button' gradientDuoTone={'purpleToBlue'}
               size={'sm'} outline
+              onClick={handleUploadImage}
               disabled={imageFileUploadingProgress}
               >
                 {imageFileUploadingProgress?

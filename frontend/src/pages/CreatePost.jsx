@@ -106,6 +106,7 @@ const CreatePost = () => {
               <Button type='button' gradientDuoTone={'purpleToBlue'}
               size={'sm'} outline
               disabled={imageFileUploadingProgress}
+              onClick={handleUploadImage}
               >
                 {imageFileUploadingProgress?
                 <div className='w-16 h-16'>

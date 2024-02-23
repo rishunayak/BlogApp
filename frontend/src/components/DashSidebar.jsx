@@ -43,7 +43,7 @@ const DashSidebar = () => {
         <Sidebar.Items>
             <Sidebar.ItemGroup className='flex flex-col gap-1'>
                 <Link to={'/dashboard?tab=profile'}>
-                <Sidebar.Item active={tab=='profile'} icon={HiUser} label={currentUser.isAdmin?'Admin':'User'} lableColor='dark' as='div'>
+                <Sidebar.Item active={tab=='profile'} icon={HiUser} label={currentUser.isAdmin?'Admin':'User'} lablecolor='dark' as='div'>
                   Profile
                 </Sidebar.Item>
                 </Link>
@@ -68,4 +68,4 @@ const DashSidebar = () => {
   )
 }
 
-export default DashSidebar
+export default DashSidebar;
