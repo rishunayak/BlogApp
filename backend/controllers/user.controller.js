@@ -84,7 +84,7 @@ export const getUsers=async(req,res)=>
   {
       return res.status(403).json({error:'You are not allowed to see all user'});
   }
-  
+
   try {
      const startIndex=+(req.query.startIndex) || 0;
      const limit=+(req.query.startIndex) || 5;
@@ -110,4 +110,21 @@ export const getUsers=async(req,res)=>
 
 
 
+}
+
+export const deleteUserByAdmin=async(req,res)=>
+{
+  
+  const {userId}=req.params
+  if(!req.user.isAdmin)
+  {
+    return res.status(403).json({error:'You are not allowed to see all user'});
+  }
+  try {
+    await User.findByIdAndDelete(userId);
+    res.status(200).json({message:'User deleted successfully'});
+  } catch (error) {
+    console.log("Error in singup Controller",error.message)
+    res.status(500).json({error:"Internal Server Error"})
+  }
 }
