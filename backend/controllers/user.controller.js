@@ -77,3 +77,37 @@ export const signout=async(req,res)=>
     res.status(500).json({error:"Internal Server Error"})
  }
 }
+
+export const getUsers=async(req,res)=>
+{
+  if(!req.user.isAdmin)
+  {
+      return res.status(403).json({error:'You are not allowed to see all user'});
+  }
+
+  try {
+     const startIndex=+(req.query.startIndex) || 0;
+     const limit=+(req.query.startIndex) || 9;
+     const sortDirection=req.query.order==='asc'?1:-1;
+
+     const users=await User.find().select('-password')
+     .sort({updatedAt:sortDirection}).skip(startIndex).limit(limit);
+    
+     const totalUsers=await User.countDocuments();
+     const now =new Date();
+     const oneMonthAgo=new Date(now.getFullYear(),
+     now.getMonth()-1,
+     now.getDate())
+
+     const lastMonthUsers=await User.countDocuments({
+        createdAt:{$gte:oneMonthAgo},
+     })
+     res.status(200).json({users,totalUsers,lastMonthUsers})
+  } catch (error) {
+    console.log("Error in singup Controller",error.message)
+    res.status(500).json({error:"Internal Server Error"})
+  }
+
+
+
+}
