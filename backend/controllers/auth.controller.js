@@ -59,7 +59,7 @@ export const login=async(req,res)=>
             return res.status(400).json({error:"Invalid email or password"})
           }
     
-          generateTokenAndsetCookie(user._id,res);
+          generateTokenAndsetCookie(user._id,user.isAdmin,res);
 
           const { password: pass, ...rest } = user._doc;
           res.status(200).json(rest)
@@ -78,7 +78,7 @@ export const google=async(req,res)=>
         const user=await User.findOne({email});
         if(user)
         {
-            generateTokenAndsetCookie(user._id,res);
+            generateTokenAndsetCookie(user._id,user.isAdmin,res);
             const {password,...rest}=user._doc
             res.status(200).json(rest)
         }else{
@@ -106,9 +106,9 @@ export const google=async(req,res)=>
 }
 
 
-const generateTokenAndsetCookie=(userId,res)=>
+const generateTokenAndsetCookie=(userId,isAdmin,res)=>
 {
-    const token=jwt.sign({userId},process.env.JWT_SECRET,{expiresIn:"15d"})
+    const token=jwt.sign({userId,isAdmin},process.env.JWT_SECRET,{expiresIn:"15d"})
     res.cookie("jwt",token,{
         maxAge:15*24*60*60*1000,
         httpOnly:true,  // save from XSS attacks crross site 
