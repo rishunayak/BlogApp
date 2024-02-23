@@ -11,7 +11,7 @@ import {
     uploadBytesResumable,
 } from 'firebase/storage'
 import {HiOutlineExclamationCircle} from "react-icons/hi"
-import { deleteUserFailure, deleteUserStart, deleteUserSuccess, updateFailure, updateStart, updateSuccess } from '../redux/user/userSlice';
+import { deleteUserFailure, deleteUserStart, deleteUserSuccess, signoutSuccess, updateFailure, updateStart, updateSuccess } from '../redux/user/userSlice';
 
 const DashProfile = () => {
     const { currentUser,error } = useSelector(store => store.user);
@@ -24,6 +24,7 @@ const DashProfile = () => {
     const [updateMessage,setUpdateMessage]=useState(null)
     const filePickerRef = useRef();
     const [imageFileUploadSuccess,setImageFileUploadSuccess]=useState(null);
+    const [signoutError,setSignoutError]=useState(null)
     const handleImageChange = (e) => {
         const file = e.target.files[0];
 
@@ -124,7 +125,8 @@ const DashProfile = () => {
         })
         if(!res.ok)
         {
-          dispatch(deleteUserFailure(data.error))
+          dispatch(deleteUserFailure(data.error));
+          setSignoutError(data.error);
         }
         else
         {
@@ -132,7 +134,27 @@ const DashProfile = () => {
         }
        } catch (error) {
         dispatch(deleteUserFailure(error.message));
+        setSignoutError(error.message);
        }
+    }
+
+    const handleSignout=async()=>
+    {
+      try {
+        const res=await fetch('/api/user/signout',{
+            method:'POST'
+        });
+        const data=await res.json();
+        if(!res.ok)
+        {
+          console.log(data.error)  
+        }else
+        {
+            dispatch(signoutSuccess())
+        }
+      } catch (error) {
+        console.log(error.message)
+      }
     }
 
     return (
@@ -178,7 +200,7 @@ const DashProfile = () => {
             </form>
             <div className='text-red-500 flex justify-between mt-5'>
                 <span className='cursor-pointer' onClick={()=>setShowModel(true)}>Delete Account</span>
-                <span className='cursor-pointer'>Sign Out</span>
+                <span onClick={handleSignout} className='cursor-pointer'>Sign Out</span>
             </div>
             {error && (<Alert color='failure' className='mt-5'>
                 {error}

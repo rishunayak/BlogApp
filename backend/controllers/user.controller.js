@@ -67,3 +67,13 @@ export const deleteUser=async(req,res)=>
     res.status(500).json({error:"Internal Server Error"})
   }
 }
+
+export const signout=async(req,res)=>
+{
+ try {
+  res.clearCookie('jwt').status(200).json({message:'User has been signed out'})
+ } catch (error) {
+    console.log("Error in singup Controller",error.message)
+    res.status(500).json({error:"Internal Server Error"})
+ }
+}
