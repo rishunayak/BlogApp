@@ -2,11 +2,14 @@ import React, { useState } from 'react'
 import moment from "moment"
 import { FaThumbsUp } from 'react-icons/fa'
 import { useSelector } from 'react-redux'
-import { Button, Textarea } from 'flowbite-react'
+import { Button, Modal, Textarea } from 'flowbite-react'
+import { HiOutlineExclamationCircle } from 'react-icons/hi'
 const Comment = ({comment,onLike,onEdit,onDelete}) => {
    const {currentUser}=useSelector((store)=>store.user)
    const [isEditing,setIsEditing]=useState(false)
    const [editedContent,setEditedContent]=useState(comment.content)
+   const [deleteComment,setDeleteComment]=useState(null)
+   const [showModel,setShowModel]=useState(false)
 
    const handleEdit=()=>
    {
@@ -33,8 +36,9 @@ const Comment = ({comment,onLike,onEdit,onDelete}) => {
    }
 
 
-   const handleDelete=async()=>
+   const handleDeleteComment=async()=>
    {
+    setShowModel(false)
     try {
         const res=await fetch(`/api/comment/deleteComment/${comment._id}`,{
             method:'DELETE'
@@ -96,7 +100,7 @@ const Comment = ({comment,onLike,onEdit,onDelete}) => {
                  {
                     currentUser && (currentUser._id === comment.userId._id || currentUser.isAdmin) && 
                     (<button type='button'
-                      onClick={handleDelete}
+                      onClick={()=>{setShowModel(true);setDeleteComment(comment)}}
                       className='text-gray-400 hover:text-blue-500'
                     >Delete</button>)
                     
@@ -106,6 +110,36 @@ const Comment = ({comment,onLike,onEdit,onDelete}) => {
             }
             
         </div>
+        <Modal show={showModel} 
+            onClick={()=>setShowModel(false)}
+            popup
+            size={'md'}
+            >
+                <Modal.Header/>
+                <Modal.Body>
+                    <div className='text-center'>
+                       <HiOutlineExclamationCircle className='h-14
+                       w-14 text-gray-400 
+                       dark:text-gray-200 mb-4
+                       mx-auto
+                       '/>
+                       <h3 className=' mb-5 text-lg text-gray-500
+                       dark:text-gray-400'>
+                        Are you sure you want to delete this comment?
+                       </h3>
+                       <div className='flex justify-center gap-4'>
+                        <Button color='failure' 
+                        onClick={handleDeleteComment}
+                        >
+                            Yes, I'm sure
+                        </Button>
+                        <Button color='gray' onClick={()=>setShowModel(false)}>
+                            No, cancel
+                        </Button>
+                       </div>
+                    </div>
+                </Modal.Body>
+            </Modal>
     </div>
   )
 }
