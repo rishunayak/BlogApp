@@ -13,6 +13,7 @@ import AdminPrivateRoute from './components/AdminPrivateRoute'
 import CreatePost from './pages/CreatePost'
 import UpdatePost from './pages/UpdatePost'
 import PostPage from './pages/PostPage'
+import ScrollToTop from './components/ScrollToTop'
 
 
 const App = () => {
@@ -20,8 +21,11 @@ const App = () => {
 
   return (
     <>
+     <ScrollToTop/>
       <Header/>
+       
       <Routes>
+       
         <Route path='/' element={<Home/>}/>
         <Route path='/about' element={<About/>} />
         <Route path='/sign-in' element={currentUser?<Home/>:<SignIn/>} />
