@@ -1,7 +1,7 @@
 import { Alert, Button, TextInput, Textarea } from 'flowbite-react';
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Comment from './Comment';
 
 const CommentSection = ({postId}) => {
@@ -10,6 +10,7 @@ const CommentSection = ({postId}) => {
     const [loading,setLoading]=useState(null)
     const [commentError,setCommentError]=useState(null)
     const [comments,setComments]=useState([]);
+    const nav=useNavigate();
     const handleSubmit=async(e)=>
     {
        e.preventDefault()
@@ -65,7 +66,40 @@ const CommentSection = ({postId}) => {
        }
        getComments();
     },[])
-    console.log(comments)
+    
+
+    const handleLike=async(commentId)=>
+    {
+      
+       try {
+        if(!currentUser)
+        {
+            nav("/sign-in")
+            return;
+        }
+
+        const res=await fetch(`/api/comment/likeComment/${commentId}`,
+        {
+            method:'PUT',
+        })
+
+        if(res.ok)
+        {
+           
+            const data=await res.json();
+           const newComments=comments.map((comment)=>
+           {
+
+              return  comment._id==commentId?{...comment,likes:data.likes,
+                numberOfLikes:data.likes.length}:comment;
+           })
+            setComments(newComments)
+        }
+
+       } catch (error) {
+        
+       }
+    }
 
   return (
     <div className='max-2-xl mx-auto w-full p-3'>
@@ -110,10 +144,10 @@ const CommentSection = ({postId}) => {
             <div className='text-sm my-5 flex items-center gap-1'>
                 <p>Comments</p>
                  <div className='border border-gray-400 py-1 px-2 rounded-sm'>
-                    <p>{comments.length}</p>
+                    <p>{comments?.length}</p>
                  </div>
             </div>
-             {comments.map(comment=> <Comment key={comment._id} comment={comment}/>)}
+             {comments?.map(comment=> <Comment key={comment?._id} onLike={handleLike}  comment={comment}/>)}
             </>
          )}
     </div>
