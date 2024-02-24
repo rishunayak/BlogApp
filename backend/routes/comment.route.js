@@ -7,8 +7,9 @@ const router=express.Router();
 
 router.post('/create',auth,createComment);
 router.get('/getPostComments/:postId',getPostComments);
-router.put('/likeComment/:commentId',auth,likeComment)
-router.put('/editComment/:commentId',auth,editComment)
+router.put('/likeComment/:commentId',auth,likeComment);
+router.put('/editComment/:commentId',auth,editComment);
+router.put('/deleteComment/:commentId',auth,deleteComment)
 
 
 export default router;

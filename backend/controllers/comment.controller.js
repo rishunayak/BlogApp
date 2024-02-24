@@ -85,3 +85,24 @@ export const editComment=async(req,res)=>
         res.status(500).json({error:"Internal Server Error"})
     }
 }
+
+export const deleteComment=async(req,res)=>
+{
+    try {
+        const comment=await Comment.findById(req.params.commentId);
+
+        if(!comment)
+        {
+            return res.status(404).json({error:'Comment not found'});
+        }
+        if(comment.userId!==req.user._id.toString() && !req.user.isAdmin)
+        {
+            return res.status(403).json({error:'User not allowed to edit'})
+        }
+        const deletedCommnet=await Comment.findByIdAndDelete(req.params.commentId)
+        res.status(200).json(deletedCommnet);
+    } catch (error) {
+        console.log("Error in Comment Controller",error.message)
+        res.status(500).json({error:"Internal Server Error"})
+    }
+}
