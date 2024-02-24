@@ -64,3 +64,24 @@ export const likeComment=async(req,res)=>
         res.status(500).json({error:"Internal Server Error"})
     }
 }
+
+export const editComment=async(req,res)=>
+{
+    try {
+        const comment=await Comment.findById(req.params.commentId);
+
+        if(!comment)
+        {
+            return res.status(404).json({error:'Comment not found'});
+        }
+        if(comment.userId!==req.user._id.toString() && !req.user.isAdmin)
+        {
+            return res.status(403).json({error:'User not allowed to edit'})
+        }
+        const editedCommnet=await Comment.findByIdAndUpdate(req.params.commentId,{content:req.body.comment},{new:true})
+        res.status(200).json(editedCommnet);
+    } catch (error) {
+        console.log("Error in Comment Controller",error.message)
+        res.status(500).json({error:"Internal Server Error"})
+    }
+}
