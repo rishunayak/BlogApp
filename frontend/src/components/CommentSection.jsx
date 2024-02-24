@@ -101,12 +101,17 @@ const CommentSection = ({postId}) => {
        }
     }
  
-     const handleEdit=async(comment,editedContent)=>
+     const handleEdit=(comment,editedContent)=>
      {
         
         setComments(
             comments.map((c)=>c._id===comment._id?{...c,content:editedContent}:c)
         )
+     }
+
+     const handleDelete=(comment)=>
+     {
+         setComments(comments.filter(c=>c._id!==comment._id));
      }
 
 
@@ -157,7 +162,9 @@ const CommentSection = ({postId}) => {
                     <p>{comments?.length}</p>
                  </div>
             </div>
-             {comments?.map(comment=> <Comment key={comment?._id} onLike={handleLike}  comment={comment} onEdit={handleEdit}/>)}
+             {comments?.map(comment=> <Comment key={comment?._id} onLike={handleLike}  
+             onDelete={handleDelete}
+             comment={comment} onEdit={handleEdit}/>)}
             </>
          )}
     </div>

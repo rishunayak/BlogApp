@@ -3,7 +3,7 @@ import moment from "moment"
 import { FaThumbsUp } from 'react-icons/fa'
 import { useSelector } from 'react-redux'
 import { Button, Textarea } from 'flowbite-react'
-const Comment = ({comment,onLike,onEdit}) => {
+const Comment = ({comment,onLike,onEdit,onDelete}) => {
    const {currentUser}=useSelector((store)=>store.user)
    const [isEditing,setIsEditing]=useState(false)
    const [editedContent,setEditedContent]=useState(comment.content)
@@ -33,6 +33,22 @@ const Comment = ({comment,onLike,onEdit}) => {
    }
 
 
+   const handleDelete=async()=>
+   {
+    try {
+        const res=await fetch(`/api/comment/deleteComment/${comment._id}`,{
+            method:'DELETE'
+        })
+        if(res.ok)
+        {
+            onDelete(comment,editedContent);
+        }
+      } catch (error) {
+        console.log(error.messsage)
+      }
+   }
+
+
   return (
     <div className='flex p-4 border-b dark:border-gray-600 text-sm' >
         <div className='flex-shrink-0 mr-3'>
@@ -53,7 +69,7 @@ const Comment = ({comment,onLike,onEdit}) => {
                  onChange={(e)=>setEditedContent(e.target.value)}
                 /> 
                 <div className='flex justify-end gap-2 text-xs'>
-                    <Button type='button' size={'sm'} gradientDuoTone={'purpleToBlue'} onClick={handleSave}>Edit</Button>
+                    <Button type='button' size={'sm'} gradientDuoTone={'purpleToBlue'} onClick={handleSave}>Save</Button>
                     <Button type='button' size={'sm'} gradientDuoTone={'purpleToBlue'} outline onClick={()=>setIsEditing(false)}>Cancel</Button>
                 </div>
                 </>:
@@ -74,6 +90,15 @@ const Comment = ({comment,onLike,onEdit}) => {
                       onClick={handleEdit}
                       className='text-gray-400 hover:text-blue-500'
                     >Edit</button>)
+                    
+                 }
+
+                 {
+                    currentUser && (currentUser._id === comment.userId._id || currentUser.isAdmin) && 
+                    (<button type='button'
+                      onClick={handleDelete}
+                      className='text-gray-400 hover:text-blue-500'
+                    >Delete</button>)
                     
                  }
             </div>
