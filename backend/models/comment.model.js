@@ -1,8 +1,11 @@
 import mongoose from "mongoose";
+import User from "./user.model.js";
 
 const commentSchema=new mongoose.Schema({
     
-    userId:{type:String,required:true},
+    userId:{type:mongoose.Schema.Types.ObjectId,
+        ref:User,
+        require:true},
     postId:{type:String,required:true,},
     content:{type:String,required:true},
     likes:{
