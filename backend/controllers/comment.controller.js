@@ -47,6 +47,7 @@ export const likeComment=async(req,res)=>
             return res.status(404).json({error:"Comment not found"})
         }
         const userIndex=comment.likes.indexOf(req.user._id.toString());
+
         if(userIndex===-1)
         {
             comment.numberOfLikes+=1
@@ -54,8 +55,10 @@ export const likeComment=async(req,res)=>
         }else
         {
             comment.numberOfLikes-=1
-            comment.likes.splice(userIndex,1);
+            comment.likes.splice(userIndex,1);     
         }
+        await comment.save();
+        res.status(200).json(comment);
     } catch (error) {
         console.log("Error in Comment Controller",error.message)
         res.status(500).json({error:"Internal Server Error"})
