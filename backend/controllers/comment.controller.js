@@ -78,8 +78,7 @@ export const editComment=async(req,res)=>
         {
             return res.status(403).json({error:'User not allowed to edit'})
         }
-        const editedCommnet=await Comment.findByIdAndUpdate(req.params.commentId,{content:req.body.comment},{new:true})
-        await editedCommnet.save();
+        const editedCommnet=await Comment.findByIdAndUpdate(req.params.commentId,{content:req.body.content},{new:true})
         res.status(200).json(editedCommnet);
     } catch (error) {
         console.log("Error in Comment Controller",error.message)
