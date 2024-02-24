@@ -6,7 +6,7 @@ export const createComment=async(req,res)=>
     try {
         const {content,postId,userId}=req.body;
 
-        if(userId!==req.user._id)
+        if(userId!==req.user._id.toString())
         {
             return  res.status(403).json({error:'You are not allowed to comment'});
         }
