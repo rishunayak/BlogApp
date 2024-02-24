@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux'
 import AdminPrivateRoute from './components/AdminPrivateRoute'
 import CreatePost from './pages/CreatePost'
 import UpdatePost from './pages/UpdatePost'
+import PostPage from './pages/PostPage'
 
 
 const App = () => {
@@ -33,7 +34,7 @@ const App = () => {
           <Route path='/create-post' element={<CreatePost/>}/>
           <Route path='/update-post/:postId' element={<UpdatePost/>}/>
         </Route>
-
+        <Route path='/post/:postSlug' element={<PostPage/>}/>
       </Routes>
       <FooterComponent/>
     </>
