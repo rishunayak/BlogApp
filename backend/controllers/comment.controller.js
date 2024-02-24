@@ -99,8 +99,8 @@ export const deleteComment=async(req,res)=>
         {
             return res.status(403).json({error:'User not allowed to edit'})
         }
-        const deletedCommnet=await Comment.findByIdAndDelete(req.params.commentId)
-        res.status(200).json(deletedCommnet);
+        await Comment.findByIdAndDelete(req.params.commentId)
+        res.status(200).json({message:'Comment is deleted Successfully'});
     } catch (error) {
         console.log("Error in Comment Controller",error.message)
         res.status(500).json({error:"Internal Server Error"})
