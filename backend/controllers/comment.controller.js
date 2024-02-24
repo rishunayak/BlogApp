@@ -36,3 +36,28 @@ export const getPostComments=async(req,res)=>
         res.status(500).json({error:"Internal Server Error"})
     }
 }
+
+
+export const likeComment=async(req,res)=>
+{
+    try {
+        const comment=await Comment.findById(req.params.commentId);
+        if(!comment)
+        {
+            return res.status(404).json({error:"Comment not found"})
+        }
+        const userIndex=comment.likes.indexOf(req.user._id.toString());
+        if(userIndex===-1)
+        {
+            comment.numberOfLikes+=1
+            comment.likes.push(req.user._id.toString());
+        }else
+        {
+            comment.numberOfLikes-=1
+            comment.likes.splice(userIndex,1);
+        }
+    } catch (error) {
+        console.log("Error in Comment Controller",error.message)
+        res.status(500).json({error:"Internal Server Error"})
+    }
+}
