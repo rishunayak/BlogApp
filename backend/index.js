@@ -6,6 +6,7 @@ import authRoutes from "./routes/auth.route.js";
 import cookieParser from 'cookie-parser';
 import postRoutes from "./routes/post.route.js"
 import commentRoutes from "./routes/comment.route.js"
+import path from 'path';
 
 const __dirname=path.resolve();
 const app = express();
