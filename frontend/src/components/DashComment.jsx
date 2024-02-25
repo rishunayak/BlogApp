@@ -1,4 +1,4 @@
-import { Button, Modal, Table } from 'flowbite-react';
+import { Button, Modal, Spinner, Table } from 'flowbite-react';
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom';
@@ -11,6 +11,7 @@ const DashComment = () => {
     const [showMore,setShowMore]=useState(true);
     const [showModel,setShowModel]=useState(false);
     const [commentIdToDelete,setCommentIdToDelete]=useState("");
+    const [loading,setLoading]=useState(true)
 
     useEffect(()=>
     {
@@ -21,12 +22,14 @@ const DashComment = () => {
             const data=await res.json();
             if(res.ok)
             {
+                setLoading(false)
                 setComments(data.comments)
                 if(data?.comments.length<9){
                     setShowMore(false)
                 }
             }
          } catch (error) {
+            setLoading(false)
             console.log(error.message)
          }
        }
@@ -74,6 +77,12 @@ const DashComment = () => {
      }
 
    }
+
+   if(loading)
+   return (
+      <div className='flex justify-center items-center min-h-screen w-full'>
+   <Spinner size={'xl'}/>
+    </div>);
 
   return (
     <div className='table-auto overflow-x-scroll md:mx-auto p-3 
