@@ -1,4 +1,4 @@
-import { Button, Select, TextInput } from 'flowbite-react';
+import { Button, Select, Spinner, TextInput } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import PostCard from '../components/PostCard';
@@ -12,7 +12,7 @@ export default function Search() {
 
   console.log(sidebarData);
   const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [showMore, setShowMore] = useState(false);
 
   const location = useLocation();
@@ -34,7 +34,7 @@ export default function Search() {
     }
 
     const fetchPosts = async () => {
-      setLoading(true);
+     
       const searchQuery = urlParams.toString();
       const res = await fetch(`/api/post/getPost?${searchQuery}`);
       if (!res.ok) {
@@ -99,6 +99,13 @@ export default function Search() {
       }
     }
   };
+
+
+  if(loading)
+   return (
+      <div className='flex justify-center items-center min-h-screen w-full'>
+   <Spinner size={'xl'}/>
+    </div>);
 
   return (
     <div className='flex flex-col md:flex-row'>

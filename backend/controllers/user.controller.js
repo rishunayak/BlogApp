@@ -45,7 +45,7 @@ export const updateUser=async(req,res)=>
                 res.status(200).json(rest);
             
         } catch (error) {
-            console.log("Error in singup Controller",error.message)
+            console.log("Error in user Controller",error.message)
             res.status(500).json({error:"Internal Server Error"})
         }
 
