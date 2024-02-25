@@ -1,4 +1,4 @@
-import { Button, Modal, Table } from 'flowbite-react';
+import { Button, Modal, Spinner, Table } from 'flowbite-react';
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom';
@@ -10,26 +10,28 @@ const DashPost = () => {
     const [showMore,setShowMore]=useState(true);
     const [showModel,setShowModel]=useState(false);
     const [postIdToDelete,setPostIdToDelete]=useState(null);
-
+    const [loading,setLoading]=useState(true)
     useEffect(()=>
     {
+
        const  fetchPosts=async()=>
-       {
+       { 
          try {
             const res= await fetch(`/api/post/getPost?userId=${currentUser._id}`);
             const data=await res.json();
             if(res.ok)
-            {
+            {setLoading(false)
                 setUserPosts(data.posts)
                 if(data.posts.length<9){
                     setShowMore(false)
                 }
             }
          } catch (error) {
-            
+            setLoading(false)
          }
        }
        fetchPosts();  
+       
     },[currentUser._id])
 
 
@@ -40,6 +42,7 @@ const DashPost = () => {
         const res= await fetch(`/api/post/getPost?userId=
         ${currentUser._id}&startIndex=${startIndex}`);
         const data=await res.json();
+       
         if(res.ok)
         {
             setUserPosts((prev)=>[...prev,...data.posts]);
@@ -51,10 +54,12 @@ const DashPost = () => {
        } catch (error) {
         console.log(error.message);
        }
+   
     }
  
    const handleDeletePost=async()=>
    {
+    
      setShowModel(false);
      try {
         const res=await fetch(`/api/post/delete/${postIdToDelete}/${currentUser._id}`,{
@@ -71,8 +76,14 @@ const DashPost = () => {
      } catch (error) {
         console.log(error)
      }
-
    }
+
+   if(loading)
+   return (
+      <div className='flex justify-center items-center min-h-screen w-full'>
+   <Spinner size={'xl'}/>
+    </div>);
+  
 
   return (
     <div className='table-auto overflow-x-scroll md:mx-auto p-3 

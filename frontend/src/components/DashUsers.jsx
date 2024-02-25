@@ -1,4 +1,4 @@
-import { Button, Modal, Table } from 'flowbite-react';
+import { Button, Modal, Spinner, Table } from 'flowbite-react';
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom';
@@ -11,9 +11,11 @@ const DashUsers = () => {
     const [showMore,setShowMore]=useState(true);
     const [showModel,setShowModel]=useState(false);
     const [userIdToDelete,setUserIdToDelete]=useState(null);
+    const [loading,setLoading]=useState(true)
 
     useEffect(()=>
     {
+   
        const  fetchUsers=async()=>
        {
          try {
@@ -21,22 +23,24 @@ const DashUsers = () => {
             const data=await res.json();
             if(res.ok)
             {
+                setLoading(false)
                 setUsers(data.users)
                 if(data.users.length<5){
                     setShowMore(false)
                 }
             }
          } catch (error) {
+            setLoading(false)
             console.log(error.message)
          }
        }
        fetchUsers();  
+       
     },[currentUser._id])
 
 
     const handleShowMore=async()=>
     {
-        
        const startIndex=users.length;
        try {
         const res= await fetch(`/api/user/getusers?startIndex=${startIndex}`);
@@ -52,10 +56,12 @@ const DashUsers = () => {
        } catch (error) {
         console.log("error",error.message);
        }
+
     }
  
    const handleDeleteUser=async()=>
    {
+       
         setShowModel(false);
      try {
         const res=await fetch(`/api/user/delete-user-by-admin/${userIdToDelete}`,{
@@ -72,9 +78,16 @@ const DashUsers = () => {
      } catch (error) {
         console.log(error)
      }
+ 
 
    }
 
+   if(loading)
+   return (
+      <div className='flex justify-center items-center min-h-screen w-full'>
+   <Spinner size={'xl'}/>
+    </div>);
+  
   return (
     <div className='table-auto overflow-x-scroll md:mx-auto p-3 
     scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300
