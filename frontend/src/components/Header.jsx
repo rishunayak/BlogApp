@@ -1,6 +1,6 @@
 import { Avatar, Button, Dropdown, Navbar, TextInput } from 'flowbite-react'
-import React from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {AiOutlineSearch} from "react-icons/ai"
 import {FaMoon,FaSun} from "react-icons/fa"
 import { useDispatch, useSelector } from 'react-redux'
@@ -9,11 +9,12 @@ import { signoutSuccess } from '../redux/user/userSlice'
 
 const Header = () => {
     const path=useLocation().pathname;
-
+    const nav=useNavigate();
     const {currentUser}=useSelector(store=>store.user)
     const dispatch=useDispatch()
     const {theme}=useSelector(store=>store.theme)
-
+    const [searchTerm,setSearchTerm]=useState('')
+    const location=useLocation()
     const handleSignout=async()=>
     {
       try {
@@ -32,6 +33,26 @@ const Header = () => {
         console.log(error.message)
       }
     }
+
+    useEffect(()=>
+    {
+        const urlParams=new URLSearchParams(location.search);
+        const searchTermFromUrl=urlParams.get('searchTerm');
+        if(searchTermFromUrl)
+        {
+          setSearchTerm(searchTermFromUrl);
+        }
+    },[location.search])
+
+    const handleSubmit=(e)=>
+    {
+      e.preventDefault();
+      const urlParams=new URLSearchParams(location.search);
+      urlParams.set('searchTerm',searchTerm);
+      const searchQuery=urlParams.toString()
+      nav(`/search?${searchQuery}`);
+    }
+
   return (
     <Navbar className='border-b-2'>
         <Link to="/" className='self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white'>
@@ -39,9 +60,11 @@ const Header = () => {
                 Rishu's
             </span>Blog
         </Link>
-        <form>
+        <form onSubmit={handleSubmit}>
             <TextInput  type='text' placeholder='Search...' rightIcon={AiOutlineSearch }
              className='hidden lg:inline'
+             value={searchTerm}
+             onChange={(e)=>setSearchTerm(e.target.value)}
             />
         </form>
         <Button className='w-12 h-10 lg:hidden' color="gray" pill>
@@ -90,7 +113,7 @@ const Header = () => {
                 <Link to="/about">About</Link>
               </Navbar.Link>
               <Navbar.Link active={path==="/projects"} as={'div'}>
-                <Link to="/projects">Projects</Link>
+                <Link to="/blogs">Blogs</Link>
               </Navbar.Link>
            </Navbar.Collapse>
     </Navbar>
