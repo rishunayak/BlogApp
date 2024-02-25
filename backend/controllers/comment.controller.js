@@ -128,10 +128,10 @@ export const getComments=async(req,res)=>
          now.getMonth()-1,
          now.getDate())
 
-       const lastMonthComment=await Comment.countDocuments({
+       const lastMonthComments=await Comment.countDocuments({
         createdAt:{$gte:oneMonthAgo},
      })
-     res.status(200).json({comments,totalComments,lastMonthComment})
+     res.status(200).json({comments,totalComments,lastMonthComments})
     } catch (error) {
         console.log("Error in Comment Controller",error.message)
         res.status(500).json({error:"Internal Server Error"})

@@ -5,6 +5,7 @@ import DashPost from '../components/DashPost';
 import DashSidebar from '../components/DashSidebar';
 import DashUsers from '../components/DashUsers';
 import DashComment from '../components/DashComment';
+import DashboardComp from '../components/DashboardComp';
 
 const Dashboard = () => {
 
@@ -31,7 +32,8 @@ const Dashboard = () => {
       {tab ==='profile' && <DashProfile/>}
       {tab==='posts' && <DashPost/>}
       {tab==='users' && <DashUsers/>}
-      {tab==='comment' && <DashComment/>}
+      {tab==='comments' && <DashComment/>}
+      {tab==='dash' && <DashboardComp/>}
     </div>
   )
 }
