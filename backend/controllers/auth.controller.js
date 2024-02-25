@@ -92,7 +92,8 @@ export const google=async(req,res)=>
             profilePicture:googlePhotoUrl,
         })
           await newUser.save();
-           generateTokenAndsetCookie(newUser._id,res);
+         
+           generateTokenAndsetCookie(newUser._id,newUser.isAdmin,res);
             const {password,...rest}=newUser._doc
             
             res.status(200).json(rest)

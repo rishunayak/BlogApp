@@ -11,7 +11,11 @@ export const create=async(req,res)=>
         return res.status(400).json({error:'Please provide all required fields'})
     }
 
-    const slug=req.body.title.split(' ').join('-').toLowerCase().replace(/[^a-zA-Z0-9]/g,'')
+    const slug= req.body.title
+    .split(' ')
+    .join('-')
+    .toLowerCase()
+    .replace(/[^a-zA-Z0-9-]/g, '');
     const newPost=new Post({
         ...req.body,slug,userId:req.user._id
     });
@@ -85,7 +89,7 @@ export const updatePost=async(req,res)=>
     {
         return res.status(403).json({error:'You are not allowed to delete this post'});
     }
-
+ 
     try {
         const post=await Post.findByIdAndUpdate(req.params.postId,
             {
