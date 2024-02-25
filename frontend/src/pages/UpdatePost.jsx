@@ -1,5 +1,5 @@
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
-import { Alert, Button, FileInput, Select, TextInput } from 'flowbite-react'
+import { Alert, Button, FileInput, Select, Spinner, TextInput } from 'flowbite-react'
 import React, { useEffect, useState } from 'react'
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -19,17 +19,19 @@ const UpdatePost = () => {
   const [formData,setFormData]=useState({});
   const [publishError,setPublishError]=useState(null);
   const {postId}=useParams();
+  const [editorHtml, setEditorHtml] = useState('');
+  const [loading,setLoading]=useState(true)
 
   const handleSubmit=async(e)=>
   {
     e.preventDefault();
     setPublishError(null);
-
+    const edited={...formData,content:editorHtml}
     try {
-        const res= await fetch(`/api/post/update/${formData._id}/${currentUser._id}`,{
+        const res= await fetch(`/api/post/update/${postId}/${currentUser._id}`,{
             method:'PUT',
             headers:{'Content-Type':'application/json'},
-            body:JSON.stringify(formData)
+            body:JSON.stringify(edited)
         })
         const data=await res.json();
         
@@ -51,9 +53,9 @@ const UpdatePost = () => {
     {
        const res=await fetch(`/api/post/getPost?postId=${postId}`);
        const data=await res.json();
-      
+ 
        if(!res.ok)
-       {console.log(data.error)
+       {
           setPublishError(data.error)
           return;
        }
@@ -61,10 +63,12 @@ const UpdatePost = () => {
        {
         setPublishError(null)
         setFormData(data.posts[0])
-      
+        setEditorHtml(data.posts[0].content)
+        setLoading(false)
        }
     }
     fetchPost();
+    
   },[postId])
 
 
@@ -108,6 +112,12 @@ const UpdatePost = () => {
      }
   }
 
+  if(loading)
+  return (
+     <div className='flex justify-center items-center min-h-screen w-full'>
+  <Spinner size={'xl'}/>
+   </div>);
+
   return (
     <div className='p-3 max-w-3xl mx-auto min-h-screen'>
         <h1 className='text-center text-3xl my-7 font-semibold'>
@@ -115,11 +125,13 @@ const UpdatePost = () => {
         </h1>
         <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
            <div className='flex flex-col gap-4 sm:flex-row justify-between'>
-             <TextInput onChange={(e)=>setFormData({...formData,title:e.target.value})}
-               type='text' placeholder='Title' required id='title' className='flex-1'
-               value={formData.title}/>
+
+             <TextInput   type='text' placeholder='Title' required  className='flex-1'
+              value={formData.title} onChange={(e)=>setFormData({...formData,title:e.target.value})}
+              />
+
               <Select value={formData.category}
-              onClick={(e)=>setFormData({...formData,category:e.target.value})}
+              onChange={(e)=>setFormData({...formData,category:e.target.value})}
               >
                 <option value={'uncategorized'}>Select a cateory</option>
                 <option value={'javascript'}>JavaScript</option>
@@ -150,11 +162,12 @@ const UpdatePost = () => {
            {formData.image && <img src={formData.image} alt='upload'
           className='w-full h-72 object-cover'/>   
           }
-           <ReactQuill  value={formData.content}
-            onChange={(value)=>setFormData({...formData,content:value})}
+
+           <ReactQuill  value={editorHtml}
+            onChange={(html) => setEditorHtml(html)}
            className='h-72 mb-12'  required theme="snow" placeholder='Write something...'  />
+
            <Button 
-           
             type='submit' gradientDuoTone={'purpleToPink'}>Update Post</Button>
          {publishError &&
           <Alert
